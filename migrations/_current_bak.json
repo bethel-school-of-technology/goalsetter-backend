@@ -1,13 +1,9 @@
 {
     "tables": {
-        "goals": {
-            "tableName": "goals",
-            "indexes": []
-        },
         "users": {
             "tableName": "users",
             "indexes": []
         }
     },
-    "revision": 2
+    "revision": 1
 }
