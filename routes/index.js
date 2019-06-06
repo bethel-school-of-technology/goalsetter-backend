@@ -1,32 +1,30 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql2');
+//var mysql = require('mysql2');
 var models = require('../models');
-var staticModels = require('../staticModels/planets');
+var staticGoals = require('../staticGoals/goals');
 
-router.get('/staticPlanets', function (req, res, next) {
-
+router.get('/staticGoals', function (req, res, next) {
   res.send(JSON.stringify(
-    staticModels.planet
-  ));
+    staticGoals.goals));
 });
 
-var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Password1!',
-  database: 'goalsetter'
-});
+// var connection = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: 'Password1!',
+//   database: 'goalsetter'
+// });
 
 
 
- connection.connect(function(err) {
-   if (err) {
-     console.error(err.message);
-    return;
-   }
-   console.log('Yay! You are connected to the database!');
- })
+//  connection.connect(function(err) {
+//    if (err) {
+//      console.error(err.message);
+//     return;
+//    }
+//    console.log('Yay! You are connected to the database!');
+//  })
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
