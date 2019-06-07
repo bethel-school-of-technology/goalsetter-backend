@@ -5,10 +5,22 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER(5)
+    },
+    UserId: {
+      allowNull: false,
+      autoIncrement: false,
+      primaryKey: false,
+      type: DataTypes.INTEGER(5)
     },
     Goal: DataTypes.STRING,
     DateFinished: DataTypes.DATE,
+    CategoryId: {
+      allowNull: false,
+      autoIncrement: false,
+      primaryKey: false,
+      type: DataTypes.INTEGER(5)
+    },
     Category: DataTypes.STRING,
     Reminder: DataTypes.STRING,
     Notes: DataTypes.STRING
