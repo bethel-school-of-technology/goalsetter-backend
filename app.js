@@ -7,9 +7,9 @@ var cors = require("cors");
 var models = require('./models');
 
 var indexRouter = require('./routes/index');
-
 var usersRouter = require('./routes/users');
 var signupRouter = require('./routes/signup');
+var goalsRouter = require('./routes/goals');
 
 var app = express();
 
@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/signup', signupRouter);
-
+app.use('/goals', goalsRouter);
 
 /* CORS CODE */
 app.use(function(req, res, next) {
