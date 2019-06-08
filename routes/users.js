@@ -1,28 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var models = require('../models');
-
-/* GET users listing. */
-// router.get('/users', function(req, res, next) {
-//   models.user.findAll ({}).then (foundUsers => {
-//     const mappedUsers = foundUsers.map (user =>
-//       ({
-//         UserID: user.user_id,
-//         Name: `${user.first_name} ${user.last_name}`
-//       }));
-//   res.send(JSON.stringify(mappedUsers));
-// });
-// });
-
-router.get('/', function(req, res, next) {
-  connection.query('SELECT * from members', function (error, results, fields) {
-   if (error) throw error;
-   res.send(JSON.stringify(results));
- });
-});
+const mysql = require('mysql2');
+var models = require('../models/users');
 
 router.get('/signup', function(req, res, next) {
   res.render('signup');
+});
+
+router.get('/users', function(req, res, next) {
+  models.users
+    .findAll({include: [{ model: models.users }]})
+    .then(usersFound => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(usersFound));
+    });
 });
 
 
