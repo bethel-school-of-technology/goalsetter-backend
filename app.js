@@ -32,8 +32,8 @@ app.use(function(req, res, next) {
   next();
 });
   
-models.sequelize.sync().then(function () {
-    console.log("DB Sync'd up")
-  });
+models.sequelize.sync({ logging: (msg) => console.log(msg) }).then(function () {
+  console.log("DB Sync'd up")
+});
 
 module.exports = app;
