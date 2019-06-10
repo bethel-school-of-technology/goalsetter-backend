@@ -8,12 +8,14 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
  });
 
+ /* FIRST TEST TO CONNECT FRONTEND WITH BACKEND - WORKING */
 router.get('/staticPlanets', function (req, res, next) {
   res.send(JSON.stringify(
     staticModels.planet
   ));
 });
 
+/* CREATE A USER IN THE DATABASE - WORKING*/ 
 router.post('/', function(req, res, next) {
   models.users
     .findOrCreate({
@@ -36,6 +38,7 @@ router.post('/', function(req, res, next) {
     });
 });
 
+/* DISPLAY ALL USERS TO HOMEPAGE - WORKING */
 router.get('/allusers', function(req, res, next) {
   models.users
     .findAll()
@@ -45,19 +48,5 @@ router.get('/allusers', function(req, res, next) {
     });
 });
 
+
 module.exports = router;
-
-
-// var connection = mysql.createConnection({
-//   host: 'localhost',
-//   user: 'root',
-//   password: 'Password1!',
-//   database: 'goalsetter'
-// });
-//  connection.connect(function(err) {
-//    if (err) {
-//      console.error(err.message);
-//     return;
-//    }
-//    console.log('Yay! You are connected to the database!');
-//  })

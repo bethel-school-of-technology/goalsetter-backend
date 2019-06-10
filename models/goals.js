@@ -21,6 +21,9 @@ module.exports = (sequelize, DataTypes) => {
   {}
   );
   goals.associate = function(models) {
+    goals.belongsTo(models.users, {
+      foreignKey: 'UserId',
+    })
     // associations can be defined here
   };
   return goals;
