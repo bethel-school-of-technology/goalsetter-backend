@@ -30,7 +30,7 @@ router.post('/', function(req, res, next) {
     })
     .spread(function(result, created) {
       if (created) {
-        res.redirect('signup');
+        res.send('signup');
       } else {
         res.send('This user already exists');
       }
