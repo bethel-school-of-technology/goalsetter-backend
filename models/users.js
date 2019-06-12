@@ -7,15 +7,12 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
+        unique: true,
         type: DataTypes.INTEGER(5)
       },
       FirstName: DataTypes.STRING(45),
       LastName: DataTypes.STRING(45),
       Email: {
-        type: DataTypes.STRING(45),
-        unique: true
-      },
-      Username: {
         type: DataTypes.STRING(45),
         unique: true
       },

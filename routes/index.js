@@ -20,20 +20,37 @@ router.post('/', function(req, res, next) {
   models.users
     .findOrCreate({
       where: {
-        Username: req.body.username
+        Email: req.body.Email
       },
       defaults: {
-        FirstName: req.body.firstName,
-        LastName: req.body.lastName,
-        Email: req.body.email,
-        Password: req.body.password
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        Password: req.body.Password
       }
     })
     .spread(function(result, created) {
       if (created) {
-        res.send('User successfully created');
+        res.redirect('signup');
       } else {
         res.send('This user already exists');
+      }
+    });
+});
+
+/* LOGIN PAGE */
+router.post('/login', function(req, res, next) {
+  models.users
+    .findOne({
+      where: {
+        Username: req.body.Username,
+        Password: req.body.Password
+      }
+    })
+    .then(user => {
+      if (user) {
+        res.redirect('profile/' + user.UserId);
+      } else {
+        res.send('Invalid login!');
       }
     });
 });
@@ -47,6 +64,7 @@ router.get('/allusers', function(req, res, next) {
       res.send(JSON.stringify(usersFound));
     });
 });
+
 
 
 module.exports = router;
