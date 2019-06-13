@@ -15,7 +15,7 @@ router.get('/staticPlanets', function (req, res, next) {
   ));
 });
 
-/* CREATE A USER IN THE DATABASE - WORKING*/ 
+/* CREATE A USER IN THE DATABASE - WORKING */ 
 router.post('/', function(req, res, next) {
   models.users
     .findOrCreate({
@@ -42,13 +42,13 @@ router.post('/login', function(req, res, next) {
   models.users
     .findOne({
       where: {
-        Username: req.body.Username,
+        Email: req.body.Email,
         Password: req.body.Password
       }
     })
     .then(user => {
       if (user) {
-        res.redirect('profile/' + user.UserId);
+        res.redirect('profile' + user.UserId);
       } else {
         res.send('Invalid login!');
       }

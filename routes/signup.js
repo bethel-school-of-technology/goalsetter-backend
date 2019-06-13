@@ -8,12 +8,11 @@ router.post('/', function(req, res, next) {
   models.users
     .findOrCreate({
       where: {
-        Username: req.body.Username
+        Email: req.body.Email,
       },
       defaults: {
         FirstName: req.body.FirstName,
         LastName: req.body.LastName,
-        Email: req.body.Email,
         Password: req.body.Password
       }
     })
