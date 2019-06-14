@@ -13,6 +13,7 @@ var usersRouter = require('./routes/users');
 var signupRouter = require('./routes/signup');
 var goalsRouter = require('./routes/goals');
 var loginRouter = require('./routes/login');
+var profileRouter = require('./routes/profile');
 
 var app = express();
 
@@ -31,7 +32,7 @@ app.use('/users', usersRouter);
 app.use('/signup', signupRouter);
 app.use('/goals', goalsRouter);
 app.use('/login', loginRouter);
-
+app.use('/profile', profileRouter);
 
 /* CORS CODE */
 app.use(function(req, res, next) {

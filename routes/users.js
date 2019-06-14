@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var models = require('../models'); //<--- Add models
+var models = require('../models'); 
 var authService = require('../services/auth');
 
 
@@ -23,7 +23,7 @@ router.post('/signup', function(req, res, next) {
       defaults: {
         FirstName: req.body.FirstName,
         LastName: req.body.LastName,
-        Password: req.body.Password
+        Password: authService.hashPassword(req.body.Password)
       }
     })
     .spread(function(result, created) {
@@ -38,44 +38,38 @@ router.post('/signup', function(req, res, next) {
 /* Login user and return JWT as cookie */
 router.post('/login', function (req, res, next) {
   models.users.findOne({
-    where: {
-      Email: req.body.Email,
-      Password: req.body.Password
-    }
+    where: { Email: req.body.Email}
   }).then(user => {
     if (!user) {
       console.log('User not found')
       return res.status(401).json({
         message: "Login Failed"
       });
-    }
-    if (user) {
-      let token = authService.signUser(user); // <--- Uses the authService to create jwt token
-      res.cookie('jwt', token); // <--- Adds token to response as a cookie
-      res.send('Login successful');
     } else {
-      console.log('Wrong password');
-      res.redirect('/login')
+      let passwordMatch = authService.comparePasswords(req.body.Password, user.Password);
+      if (passwordMatch) {
+        let token = authService.signUser(user);
+        res.cookie('jwt', token);
+        res.send('Login successful');
+      } else {
+        console.log('Wrong password');
+        res.send('Wrong password');
+      }
     }
   });
 });
 
 router.get('/profile', function (req, res, next) {
   let token = req.cookies.jwt;
-  if (token) {
-    authService.verifyUser(token)
-      .then(user => {
-        if (user) {
-          res.send(JSON.stringify(user));
-        } else {
-          res.status(401);
-          res.send('Invalid authentication token');
-        }
-      });
-  } else {
-    res.status(401);
-    res.send('Must be logged in');
-  }
+  authService.verifyUser(token)
+    .then(user => {
+      if (user) {
+        res.send(JSON.stringify(user));
+      } else {
+        res.status(401);
+        res.send('Must be logged in');
+      }
+    })
 });
 
   router.get('/logout', function (req, res, next) {
