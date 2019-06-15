@@ -9,9 +9,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER(5)
     },
     UserId: {
-      allowNull: true,
-      autoIncrement: false,
-      primaryKey: false,
+      // allowNull: true,
+      // autoIncrement: false,
+      // primaryKey: false,
       type: DataTypes.INTEGER(5)
     },
     Goal: DataTypes.STRING,

@@ -10,6 +10,15 @@ res.send(JSON.stringify(
   ));
 });
 
+router.get('/allgoals', function(req, res, next) {
+  models.goals
+    .findAll()
+    .then(goalsFound => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(goalsFound));
+    });
+});
+
 
 /* CREATE A USER IN THE DATABASE - WORKING*/ 
 router.post('/', function(req, res, next) {
