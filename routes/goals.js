@@ -19,8 +19,20 @@ router.get('/', function(req, res, next) {
     });
 });
 
-
-/* CREATE A USER IN THE DATABASE - WORKING*/ 
+/* POSSIBLE ASSOCIATION FRAMEWORK */
+// router.post('/', function (req, res, next) {
+//   let token = req.cookies.jwt;
+//   authService.verifyUser(token)
+//     .then(user => {
+//       if (user) {
+//         res.send(JSON.stringify(user));
+//       } else {
+//         res.status(401);
+//         res.send('Must be logged in');
+//       }
+//     })
+// });
+/* CREATE A GOAL IN THE DATABASE - WORKING BUT NOT ASSOCIATING*/ 
 router.post('/', function(req, res, next) {
   models.goals
     .findOrCreate({

@@ -8,12 +8,11 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       type: DataTypes.INTEGER(5)
     },
-    UserId: {
-      // allowNull: true,
-      // autoIncrement: false,
-      // primaryKey: false,
-      type: DataTypes.INTEGER(5)
-    },
+    // UserId: {
+    //   allowNull: false,
+    //   required: true,
+    //   type: DataTypes.INTEGER(5)
+    // },
     Goal: DataTypes.STRING,
     DateFinished: DataTypes.DATE,
     Reminder: DataTypes.STRING,
@@ -21,11 +20,14 @@ module.exports = (sequelize, DataTypes) => {
   }, 
   {}
   );
-  goals.associate = function(models) {
-    goals.belongsTo(models.users, {
-      foreignKey: 'UserId',
-    })
-    // associations can be defined here
-  };
+
+  
+   // associations can be defined here
+  // goals.associate = function(models) {
+  //   goals.belongsTo(models.users, {
+  //     foreignKey: 'UserId',
+  //   })
+   
+  // };
   return goals;
 };
