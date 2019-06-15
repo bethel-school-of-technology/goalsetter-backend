@@ -10,7 +10,7 @@ res.send(JSON.stringify(
   ));
 });
 
-router.get('/allgoals', function(req, res, next) {
+router.get('/', function(req, res, next) {
   models.goals
     .findAll()
     .then(goalsFound => {
