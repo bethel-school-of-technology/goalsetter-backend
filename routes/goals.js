@@ -13,22 +13,27 @@ router.get('/', function(req, res, next) {
     });
 });
 
-/* POSSIBLE ASSOCIATION FRAMEWORK */
-router.post('/', function (req, res, next) {
-  jwt.verify(req.token, 'secretkey', (err, authorizedData) => {
-    if(err){
-        //If error send Forbidden (403)
-        console.log('ERROR: Could not connect to the protected route');
-        res.sendStatus(403);
-    } else {
-        //If token is successfully verified, we can send the autorized data 
-        res.json({
-            message: 'Successful log in',
-            authorizedData
-        });
-        console.log('SUCCESS: Connected to protected route');
-    }
-})
+
+/* CREATE A USER IN THE DATABASE - WORKING*/ 
+router.post('/', function(req, res, next) {
+  models.goals
+    .findOrCreate({
+      where: {
+        Goal: req.body.Goal
+      },
+      defaults: {
+        DateFinished: req.body.DateFinished,
+        Reminder: req.body.Reminder,
+        Notes: req.body.Notes
+      }
+    })
+    .spread(function(result, created) {
+      if (created) {
+        res.redirect('profile');
+      } else {
+        res.send('This Goal already exists');
+      }
+    });
 });
   
 /* CREATE A GOAL IN THE DATABASE - WORKING BUT NOT ASSOCIATING*/ 

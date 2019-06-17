@@ -48,6 +48,13 @@ router.post('/login', function(req, res, next) {
     });
 });
 
+router.get('logout', function (req, res) {
+  req.logout();
+  req.session.destroy()
+  res.redirect('login');
+});
+
+
 /* DISPLAY ALL USERS TO HOMEPAGE - WORKING */
 router.get('/allusers', function(req, res, next) {
   models.users
@@ -59,5 +66,13 @@ router.get('/allusers', function(req, res, next) {
 });
 
 
-
+// router.get('/logout', function (req, res, next) {
+//   (req.session.destroy)(function(err) {
+//     if (err) {
+//       return next(err)
+//     } else {
+//       return res.redirect('/home');
+//     }
+//   });
+// });
 module.exports = router;
