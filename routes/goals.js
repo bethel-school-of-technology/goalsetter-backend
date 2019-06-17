@@ -35,7 +35,7 @@ router.post('/', function(req, res, next) {
     })
     .spread(function(result, created) {
       if (created) {
-        res.send('Goal successfully created');
+        res.redirect('profile');
       } else {
         res.send('This Goal already exists');
       }
