@@ -1,19 +1,12 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var staticModels = require('../staticModels/planets');
+var authService = require('../services/auth');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
  });
-
- /* FIRST TEST TO CONNECT FRONTEND WITH BACKEND - WORKING */
-router.get('/staticPlanets', function (req, res, next) {
-  res.send(JSON.stringify(
-    staticModels.planet
-  ));
-});
 
 /* CREATE A USER IN THE DATABASE - WORKING */ 
 router.post('/', function(req, res, next) {
