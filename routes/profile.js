@@ -3,6 +3,11 @@ var router = express.Router();
 var models = require('../models'); 
 var authService = require('../services/auth');
 
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+ });
+
 router.get('/profile', function (req, res, next) {
     let token = req.cookies.jwt;
     authService.verifyUser(token)

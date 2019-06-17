@@ -11,7 +11,7 @@ var session = require('express-session');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var goalsRouter = require('./routes/goals');
-
+var profilegoalsRouter = require('./routes/profilegoals');
 var app = express();
 
 // app.use(logger('dev'));
@@ -27,6 +27,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goals', goalsRouter);
+app.use('/profilegoals', profilegoalsRouter);
 
 /* CORS CODE */
 app.use(function(req, res, next) {
