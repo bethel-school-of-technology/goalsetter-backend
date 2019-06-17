@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var staticGoals = require('../staticModels/goals');
+var authService = require('../services/auth');
 
 
 router.get('/staticGoals', function (req, res, next) {
@@ -20,38 +20,43 @@ router.get('/', function(req, res, next) {
 });
 
 /* POSSIBLE ASSOCIATION FRAMEWORK */
-// router.post('/', function (req, res, next) {
-//   let token = req.cookies.jwt;
-//   authService.verifyUser(token)
-//     .then(user => {
-//       if (user) {
-//         res.send(JSON.stringify(user));
-//       } else {
-//         res.status(401);
-//         res.send('Must be logged in');
+router.post('/', function (req, res, next) {
+  jwt.verify(req.token, 'secretkey', (err, authorizedData) => {
+    if(err){
+        //If error send Forbidden (403)
+        console.log('ERROR: Could not connect to the protected route');
+        res.sendStatus(403);
+    } else {
+        //If token is successfully verified, we can send the autorized data 
+        res.json({
+            message: 'Successful log in',
+            authorizedData
+        });
+        console.log('SUCCESS: Connected to protected route');
+    }
+})
+});
+  
+/* CREATE A GOAL IN THE DATABASE - WORKING BUT NOT ASSOCIATING*/ 
+// router.post('/', function(req, res, next) {
+  // models.goals
+  //   .findOrCreate({
+//       where: {
+//         Goal: req.body.Goal
+//       },
+//       defaults: {
+//         DateFinished: req.body.DateFinished,
+//         Reminder: req.body.Reminder,
+//         Notes: req.body.Notes
 //       }
 //     })
+//     .spread(function(result, created) {
+//       if (created) {
+//         res.send('Goal successfully created');
+//       } else {
+//         res.send('This Goal already exists');
+//       }
+//     });
 // });
-/* CREATE A GOAL IN THE DATABASE - WORKING BUT NOT ASSOCIATING*/ 
-router.post('/', function(req, res, next) {
-  models.goals
-    .findOrCreate({
-      where: {
-        Goal: req.body.Goal
-      },
-      defaults: {
-        DateFinished: req.body.DateFinished,
-        Reminder: req.body.Reminder,
-        Notes: req.body.Notes
-      }
-    })
-    .spread(function(result, created) {
-      if (created) {
-        res.send('Goal successfully created');
-      } else {
-        res.send('This Goal already exists');
-      }
-    });
-});
 
 module.exports = router;
