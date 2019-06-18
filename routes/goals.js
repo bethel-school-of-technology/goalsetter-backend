@@ -5,6 +5,7 @@ var authService = require('../services/auth');
 
 
 router.get('/', function(req, res, next) {
+  
   models.goals
     .findAll()
     .then(goalsFound => {
@@ -16,6 +17,9 @@ router.get('/', function(req, res, next) {
 
 /* CREATE A USER IN THE DATABASE - WORKING*/ 
 router.post('/', function(req, res, next) {
+  if(!req.cookies.jwt) {
+    res.redirect('/users/login');
+  }
   models.goals
     .findOrCreate({
       where: {

@@ -29,7 +29,7 @@ router.post('/signup', function(req, res, next) {
     .spread(function(result, created) {
       if (created) {
         // res.send('User successfully created');
-        res.redirect('/login');
+        res.redirect('/users/login');
       } else {
         res.send('This user already exists');
       }
@@ -51,7 +51,7 @@ router.post('/login', function (req, res, next) {
       if (passwordMatch) {
         let token = authService.signUser(user);
         res.cookie('jwt', token);
-        res.redirect('/users/profile');
+        res.redirect('/profile');
       } else {
         console.log('Wrong password');
         res.send('Wrong password');
@@ -62,7 +62,11 @@ router.post('/login', function (req, res, next) {
 
 router.get('/profile', function (req, res, next) {
   let token = req.cookies.jwt;
-  authService.verifyUser(token)
+
+  if(token) {
+    // verify user
+
+    authService.verifyUser(token)
     .then(user => {
       if (user) {
         res.send(JSON.stringify(user));
@@ -71,6 +75,13 @@ router.get('/profile', function (req, res, next) {
         res.send('Must be logged in');
       }
     })
+
+  } else {
+    // redirect to login 
+res.redirect('/users/login');
+  }
+  
+  
 });
 
   router.get('/logout', function (req, res, next) {
