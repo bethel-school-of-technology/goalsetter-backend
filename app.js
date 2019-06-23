@@ -2,7 +2,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 // var logger = require('morgan');
-var mysql = require('mysql2')
 var cors = require("cors");
 var models = require('./models');
 var passport = require('passport');  // <--- Add this code to your declarations
