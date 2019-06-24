@@ -11,8 +11,12 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var goalsRouter = require('./routes/goals');
 var profilegoalsRouter = require('./routes/profilegoals');
+var signupUserRouter = require('./routes/signupUser');
 var app = express();
+var bcrypt = require('bcrypt');
 
+const jwt = require('jsonwebtoken');
+//const exjwt = require('express-jwt');
 // app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
@@ -27,6 +31,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goals', goalsRouter);
 app.use('/profilegoals', profilegoalsRouter);
+app.use('/signupUser', signupUserRouter);
 
 /* CORS CODE */
 app.use(function(req, res, next) {
@@ -38,5 +43,14 @@ app.use(function(req, res, next) {
 models.sequelize.sync({ logging: (msg) => console.log(msg) }).then(function () {
   console.log("DB Sync'd up")
 });
+
+
+
+
+
+    
+
+  
+
 
 module.exports = app;
