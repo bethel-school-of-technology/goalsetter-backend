@@ -1,4 +1,4 @@
-//import passport from 'passport';
+import passport from 'passport';
 
 var express = require('express');
 var router = express.Router();
@@ -17,22 +17,22 @@ module.exports = app => {
       } else {
         req.signup(user, err => {
           const data = {
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            password: req.body.password,
+            FirstName: req.body.FirstName,
+            LastName: req.body.LastName,
+            Email: req.body.Email,
+            Password: req.body.Password,
           };
           User.findOne({
             where: {
-              email: data.email,
+              Email: data.Email,
             },
           }).then(user => {
             user
               .update({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                password: data.password,
+                FirstName: data.FirstName,
+                LastName: data.LastName,
+                Email: data.Email,
+                Password: data.Password,
               })
               .then(() => {
                 console.log('user created in db');

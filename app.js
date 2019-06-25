@@ -27,6 +27,7 @@ app.use(session({ secret: 'perilous journey' }));
 app.use(passport.initialize());  
 app.use(passport.session());
 
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goals', goalsRouter);
