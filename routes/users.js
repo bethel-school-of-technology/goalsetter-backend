@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require('../config/keys');
 var models = require('../models'); 
-// var authService = require('../services/auth');
+var authService = require('../services/auth');
 
 
 // Load input validation
@@ -22,32 +22,52 @@ const { errors, isValid } = validateSignupInput(req.body);
 if (!isValid) {
   return res.status(400).json(errors);
 }
-
-models.users.findOrCreate({ Email: req.body.Email }).then(user => {
-  if (user) {
-    return res.status(400).json({ email: "Email already exists" });
-  } else {
-    const newUser = {
-      FirstName: req.body.FirstName,
-      LastName: req.body.LastName,
-      Email: req.body.Email,
-      Password: req.body.Password
-    };
-// Hash password before saving in database
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.Password, salt, (err, hash) => {
-        if (err) throw err;
-        newUser.Password = hash;
-        newUser
-          .save()
-          .then(user => res.json(user))
-          .catch(err => console.log(err));
-      });
+models.users
+    .findOrCreate({
+      where: {
+        Email: req.body.Email
+      },
+      defaults: {
+        FirstName: req.body.FirstName,
+        LastName: req.body.LastName,
+        Password: authService.hashPassword(req.body.Password) //<--- Change to this code here
+      }
+    })
+    .spread(function (result, created) {
+      if (created) {
+        res.send('User successfully created');
+      } else {
+        res.send('This user already exists');
+      }
     });
-  }
-});
+
+
+// models.users.findOrCreate({ Email: req.body.Email }).then(user => {
+//   if (user) {
+//     return res.status(400).json({ email: "Email already exists" });
+//   } else {
+//     const newUser = {
+//       FirstName: req.body.FirstName,
+//       LastName: req.body.LastName,
+//       Email: req.body.Email,
+//       Password: req.body.Password
+//     };
+// // Hash password before saving in database
+//     bcrypt.genSalt(10, (err, salt) => {
+//       bcrypt.hash(newUser.Password, salt, (err, hash) => {
+//         if (err) throw err;
+//         newUser.Password = hash;
+//         newUser
+//           .save()
+//           .then(user => res.json(user))
+//           .catch(err => console.log(err));
+//       });
+//     });
+//   }
+// });
 });
 
+/*OPTION 1 of LOGIN */
 router.post("/login", (req, res) => {
   // Form validation
 const { errors, isValid } = validateLoginInput(req.body);
@@ -64,7 +84,7 @@ const Email = req.body.Email;
       return res.status(404).json({ Emailnotfound: "Email not found" });
     }
 // Check password
-    bcrypt.compare(Password, user.Password).then(isMatch => {
+    bcrypt.compare(req.body.Password, user.Password).then(isMatch => {
       if (isMatch) {
         // User matched
         // Create JWT Payload
@@ -95,6 +115,43 @@ const Email = req.body.Email;
     });
   });
 });
+
+/*OPTION 2 of LOGIN */
+// router.post("/login", (req, res) => {
+//   // Form validation
+// const { errors, isValid } = validateLoginInput(req.body);
+// // Check validation
+//   if (!isValid) {
+//     return res.status(400).json(errors);
+//   }
+//   models.users.findOne({
+//         where: { Email: req.body.Email}
+//       }).then(user => {
+//         if (!user) {
+//           console.log('User not found')
+//           return res.status(401).json({
+//             message: "Login Failed"
+//           });
+//         } else {
+//           let passwordMatch = authService.comparePasswords(req.body.Password, user.Password);
+//           if (passwordMatch) {
+//             let token = authService.signUser(user);
+//             return res.status(200).json({
+//               token
+//             });
+//             // res.cookie('jwt', token);
+//             //res.setHeaderHere
+//             // res.send('You are logged in!');
+    
+//           } else {
+//             console.log('Wrong password');
+//             res.send('Wrong password');
+//           }
+//         }
+//       });
+//     });
+
+        
 
 
 // router.get('/', function(req, res, next) {
