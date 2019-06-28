@@ -1,9 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var models = require('../models'); 
-var authService = require('../services/auth');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const keys = require('../config/keys');
+var models = require('../models'); 
+// var authService = require('../services/auth');
+
 
 // Load input validation
 const validateSignupInput = require('../validation/signup');
@@ -21,21 +23,21 @@ if (!isValid) {
   return res.status(400).json(errors);
 }
 
-Users.findOne({ Email: req.body.Email }).then(user => {
+models.users.findOrCreate({ Email: req.body.Email }).then(user => {
   if (user) {
     return res.status(400).json({ email: "Email already exists" });
   } else {
-    const newUser = new user({
+    const newUser = {
       FirstName: req.body.FirstName,
       LastName: req.body.LastName,
       Email: req.body.Email,
       Password: req.body.Password
-    });
+    };
 // Hash password before saving in database
     bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(newUser.password, salt, (err, hash) => {
+      bcrypt.hash(newUser.Password, salt, (err, hash) => {
         if (err) throw err;
-        newUser.password = hash;
+        newUser.Password = hash;
         newUser
           .save()
           .then(user => res.json(user))
@@ -56,7 +58,7 @@ const { errors, isValid } = validateLoginInput(req.body);
 const Email = req.body.Email;
   const password = req.body.password;
 // Find user by email
-  findOne({ Email }).then(user => {
+  models.users.findOne({ Email }).then(user => {
     // Check if user exists
     if (!user) {
       return res.status(404).json({ Emailnotfound: "Email not found" });
@@ -68,7 +70,8 @@ const Email = req.body.Email;
         // Create JWT Payload
         const payload = {
           id: user.id,
-          name: user.name
+          FirstName: user.FirstName,
+          LastName: user.LastName,
         };
 // Sign token
         jwt.sign(

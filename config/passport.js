@@ -1,19 +1,21 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const sequelize = require('sequelize');
-//const mongoose = require("mongoose");
-//const User = model('users');
-const keys = require('../config/keys');
+const models= require('../models');
+const keys = require('./keys');
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = keys.secretOrKey;
+
+
 module.exports = passport => {
   passport.use(
     new JwtStrategy(opts, (jwt_payload, done) => {
-      User.findById(jwt_payload.id)
-        .then(user => {
-          if (user) {
-            return done(null, user);
+      
+      models.users.findById(jwt_payload.id)
+        .then(User => {
+          if (User) {
+            return done(null, User);
           }
           return done(null, false);
         })
