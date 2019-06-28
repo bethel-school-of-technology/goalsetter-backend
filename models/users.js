@@ -1,9 +1,11 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
+  // var seq = require("sequelize")
   var users = sequelize.define(
     'users',
     {
-      UserId: {
+      Id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,

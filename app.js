@@ -6,12 +6,15 @@ var cors = require("cors");
 var models = require('./models');
 var passport = require('passport');  // <--- Add this code to your declarations
 var session = require('express-session');
+var bodyParser = require ('body-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var goalsRouter = require('./routes/goals');
 var profilegoalsRouter = require('./routes/profilegoals');
 var app = express();
+
+var users = require('./routes/users')
 
 // app.use(logger('dev'));
 app.use(express.json());
@@ -27,6 +30,22 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goals', goalsRouter);
 app.use('/profilegoals', profilegoalsRouter);
+
+// Bodyparser middleware
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+);
+app.use(bodyParser.json());
+
+// Passport middleware
+app.use(passport.initialize());
+// Passport config
+require('./config/passport')(passport);
+// Routes
+app.use('/routes/users', users);
+
 
 /* CORS CODE */
 app.use(function(req, res, next) {

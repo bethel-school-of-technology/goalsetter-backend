@@ -2,97 +2,187 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models'); 
 var authService = require('../services/auth');
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
+// Load input validation
+const validateSignupInput = require('../validation/signup');
+const validateLoginInput = require('../validation/login');
 
-router.get('/', function(req, res, next) {
-  models.users
-    .findAll()
-    .then(usersFound => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(usersFound));
+// Load User model
+const Users = require('../models/users');
+
+router.post("/signup", (req, res) => {
+// Form validation
+const { errors, isValid } = validateSignupInput(req.body);
+
+// Check validation
+if (!isValid) {
+  return res.status(400).json(errors);
+}
+
+Users.findOne({ Email: req.body.Email }).then(user => {
+  if (user) {
+    return res.status(400).json({ email: "Email already exists" });
+  } else {
+    const newUser = new user({
+      FirstName: req.body.FirstName,
+      LastName: req.body.LastName,
+      Email: req.body.Email,
+      Password: req.body.Password
     });
-});
-
-/* CREATE A USER IN THE DATABASE - WORKING*/ 
-router.post('/signup', function(req, res, next) {
-  models.users
-    .findOrCreate({
-      where: {
-        Email: req.body.Email
-      },
-      defaults: {
-        FirstName: req.body.FirstName,
-        LastName: req.body.LastName,
-        Password: authService.hashPassword(req.body.Password)
-      }
-    })
-    .spread(function(result, created) {
-      if (created) {
-        res.send('User successfully created');
-        // res.redirect('/login');
-      } else {
-        res.send('This user already exists');
-      }
-    });
-});
-
-/* Login user and return JWT as cookie */
-router.post('/login', function (req, res, next) {
-  models.users.findOne({
-    where: { Email: req.body.Email}
-  }).then(user => {
-    if (!user) {
-      console.log('User not found')
-      return res.status(401).json({
-        message: "Login Failed"
+// Hash password before saving in database
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(newUser.password, salt, (err, hash) => {
+        if (err) throw err;
+        newUser.password = hash;
+        newUser
+          .save()
+          .then(user => res.json(user))
+          .catch(err => console.log(err));
       });
-    } else {
-      let passwordMatch = authService.comparePasswords(req.body.Password, user.Password);
-      if (passwordMatch) {
-        let token = authService.signUser(user);
-        return res.status(200).json({
-          token
-        });
-        // res.cookie('jwt', token);
-        //res.setHeaderHere
-        // res.send('You are logged in!');
+    });
+  }
+});
+});
 
-      } else {
-        console.log('Wrong password');
-        res.send('Wrong password');
-      }
+router.post("/login", (req, res) => {
+  // Form validation
+const { errors, isValid } = validateLoginInput(req.body);
+// Check validation
+  if (!isValid) {
+    return res.status(400).json(errors);
+  }
+const Email = req.body.Email;
+  const password = req.body.password;
+// Find user by email
+  findOne({ Email }).then(user => {
+    // Check if user exists
+    if (!user) {
+      return res.status(404).json({ Emailnotfound: "Email not found" });
     }
+// Check password
+    bcrypt.compare(Password, user.Password).then(isMatch => {
+      if (isMatch) {
+        // User matched
+        // Create JWT Payload
+        const payload = {
+          id: user.id,
+          name: user.name
+        };
+// Sign token
+        jwt.sign(
+          payload,
+          keys.secretOrKey,
+          {
+            expiresIn: 31556926 // 1 year in seconds
+          },
+          (err, token) => {
+            res.json({
+              success: true,
+              token: "Bearer " + token
+            });
+          }
+        );
+      } else {
+        return res
+          .status(400)
+          .json({ passwordincorrect: "Password incorrect" });
+      }
+    });
   });
 });
 
-router.get('/profile', function (req, res, next) {
-  let token = req.cookies.jwt;
 
-  if(token) {
-    // verify user
+// router.get('/', function(req, res, next) {
+//   models.users
+//     .findAll()
+//     .then(usersFound => {
+//       res.setHeader('Content-Type', 'application/json');
+//       res.send(JSON.stringify(usersFound));
+//     });
+// });
 
-    authService.verifyUser(token)
-    .then(user => {
-      if (user) {
-        res.send(JSON.stringify(user));
-      } else {
-        res.status(401);
-        res.send('Must be logged in');
-      }
-    })
+// /* CREATE A USER IN THE DATABASE - WORKING*/ 
+// router.post('/signup', function(req, res, next) {
+//   models.users
+//     .findOrCreate({
+//       where: {
+//         Email: req.body.Email
+//       },
+//       defaults: {
+//         FirstName: req.body.FirstName,
+//         LastName: req.body.LastName,
+//         Password: authService.hashPassword(req.body.Password)
+//       }
+//     })
+//     .spread(function(result, created) {
+//       if (created) {
+//         res.send('User successfully created');
+//         // res.redirect('/login');
+//       } else {
+//         res.send('This user already exists');
+//       }
+//     });
+// });
 
-  } else {
-    // redirect to login 
-res.redirect('/users/login');
-  }
+// /* Login user and return JWT as cookie */
+// router.post('/login', function (req, res, next) {
+//   models.users.findOne({
+//     where: { Email: req.body.Email}
+//   }).then(user => {
+//     if (!user) {
+//       console.log('User not found')
+//       return res.status(401).json({
+//         message: "Login Failed"
+//       });
+//     } else {
+//       let passwordMatch = authService.comparePasswords(req.body.Password, user.Password);
+//       if (passwordMatch) {
+//         let token = authService.signUser(user);
+//         return res.status(200).json({
+//           token
+//         });
+//         // res.cookie('jwt', token);
+//         //res.setHeaderHere
+//         // res.send('You are logged in!');
+
+//       } else {
+//         console.log('Wrong password');
+//         res.send('Wrong password');
+//       }
+//     }
+//   });
+// });
+
+// router.get('/profile', function (req, res, next) {
+//   let token = req.cookies.jwt;
+
+//   if(token) {
+//     // verify user
+
+//     authService.verifyUser(token)
+//     .then(user => {
+//       if (user) {
+//         res.send(JSON.stringify(user));
+//       } else {
+//         res.status(401);
+//         res.send('Must be logged in');
+//       }
+//     })
+
+//   } else {
+//     // redirect to login 
+// res.redirect('/users/login');
+//   }
   
   
-});
+// });
 
-  router.get('/logout', function (req, res, next) {
-    res.cookie('jwt', "", { expires: new Date(0) });
-    res.send('Logged out');
-    });
+//   router.get('/logout', function (req, res, next) {
+//     res.cookie('jwt', "", { expires: new Date(0) });
+//     res.send('Logged out');
+//     });
 
 /*VICTORS SUGGESTION FOR SIGNUP*/
 //         req.session.currentUser = req.body.Email;
