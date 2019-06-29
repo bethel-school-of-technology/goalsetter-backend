@@ -4,22 +4,35 @@ var models = require('../models');
 var authService = require('../services/auth');
 
 
-router.get('/', function(req, res, next) {
-  
+// router.get('/', function(req, res, next) {
+//   models.goals
+//     .findAll()
+//     .then(goalsFound => {
+//       res.setHeader('Content-Type', 'application/json');
+//       res.send(JSON.stringify(goalsFound));
+//     });
+// });
+
+/* GET GOALS FOR SPECIFIC USER IN DATABASE */
+router.get('/:userId', (req, res, next) => {
   models.goals
-    .findAll()
-    .then(goalsFound => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(goalsFound));
-    });
-});
+  .findAll({
+    where: {
+      userId: req.params['userId']
+    }
+  })
+  .then(userGoals => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(userGoals));
+  }, error => {
+    console.log("ERROR: ", error),
+    res.status(400).send("Could not find goals for userId");
+  })
 
+})
 
-/* CREATE A USER IN THE DATABASE - WORKING*/ 
+/* CREATE A GOAL IN THE DATABASE - WORKING*/ 
 router.post('/', function(req, res, next) {
-  if(!req.cookies.jwt) {
-    res.redirect('/users/login');
-  }
   models.goals
     .findOrCreate({
       where: {
@@ -28,7 +41,7 @@ router.post('/', function(req, res, next) {
       defaults: {
         DateFinished: req.body.DateFinished,
         Reminder: req.body.Reminder,
-        Notes: req.body.Notes
+        Notes: req.body.Notes,
       }
     })
     .spread(function(result, created) {

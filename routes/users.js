@@ -12,8 +12,12 @@ const validateSignupInput = require('../validation/signup');
 const validateLoginInput = require('../validation/login');
 
 // Load User model
-// const Users = require('../models/users');
+const User = require('../models/users');
 
+
+// @route POST api/users/signup
+// @desc Register user
+// @access Public
 router.post("/signup", (req, res) => {
 // Form validation
 const { errors, isValid } = validateSignupInput(req.body);
@@ -22,6 +26,7 @@ const { errors, isValid } = validateSignupInput(req.body);
 if (!isValid) {
   return res.status(400).json(errors);
 }
+  // Form validation
 models.users
     .findOrCreate({
       where: {
@@ -32,7 +37,8 @@ models.users
         LastName: req.body.LastName,
         Password: authService.hashPassword(req.body.Password) //<--- Change to this code here
       }
-    })
+    }
+    )
     .spread(function (result, created) {
       if (created) {
         res.send('User successfully created');
@@ -43,6 +49,55 @@ models.users
 });
 
 /*OPTION 1 of LOGIN */
+// router.post("/login", (req, res) => {
+//   // Form validation
+// const { errors, isValid } = validateLoginInput(req.body);
+// // Check validation
+//   if (!isValid) {
+//     return res.status(400).json(errors);
+//   }
+// const Email = req.body.Email;
+//   const password = req.body.password;
+// // Find user by email
+//   models.users.findOne({ Email }).then(user => {
+//     // Check if user exists
+//     if (!user) {
+//       return res.status(404).json({ Emailnotfound: "Email not found" });
+//     }
+// // Check password
+//     bcrypt.compare(req.body.Password, user.Password).then(isMatch => {
+//       if (isMatch) {
+//         // User matched
+//         // Create JWT Payload
+//         const payload = {
+//           id: user.id,
+//           FirstName: user.FirstName,
+//           LastName: user.LastName,
+//         };
+// // Sign token
+//         jwt.sign(
+//           payload,
+//           keys.secretOrKey,
+//           {
+//             expiresIn: 31556926 // 1 year in seconds
+//           },
+//           (err, token) => {
+//             res.json({
+//               success: true,
+//               token: "Bearer " + token
+//             });
+//           }
+//         );
+//       } else {
+//         return res
+//           .status(400)
+//           .json({ passwordincorrect: "Password incorrect" });
+//       }
+//     });
+//   });
+// });
+
+/*OPTION 2 of LOGIN */
 router.post("/login", (req, res) => {
   // Form validation
 const { errors, isValid } = validateLoginInput(req.body);
@@ -50,13 +105,15 @@ const { errors, isValid } = validateLoginInput(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
   }
-const Email = req.body.Email;
-  const password = req.body.password;
 // Find user by email
-  models.users.findOne({ Email }).then(user => {
+  models.users.findOne({ 
+    where: {
+    Email: req.body.Email
+  }, })
+  .then(user => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ Emailnotfound: "Email not found" });
+      return res.status(404).json({ emailnotfound: "Email not found" });
     }
 // Check password
     bcrypt.compare(req.body.Password, user.Password).then(isMatch => {
@@ -64,9 +121,12 @@ const Email = req.body.Email;
         // User matched
         // Create JWT Payload
         const payload = {
-          id: user.id,
-          FirstName: user.FirstName,
-          LastName: user.LastName,
+          id: user.Id,
+          firstName: user.FirstName,
+          lastName: user.LastName,
+          email: user.Email,
+          goal: user.Goal
+
         };
 // Sign token
         jwt.sign(
@@ -91,7 +151,8 @@ const Email = req.body.Email;
   });
 });
 
-/*OPTION 2 of LOGIN */
+
+/*OPTION 3 of LOGIN */
 // router.post("/login", (req, res) => {
 //   // Form validation
 // const { errors, isValid } = validateLoginInput(req.body);
