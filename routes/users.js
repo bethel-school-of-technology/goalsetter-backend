@@ -12,7 +12,7 @@ const validateSignupInput = require('../validation/signup');
 const validateLoginInput = require('../validation/login');
 
 // Load User model
-const Users = require('../models/users');
+// const Users = require('../models/users');
 
 router.post("/signup", (req, res) => {
 // Form validation
@@ -40,31 +40,6 @@ models.users
         res.send('This user already exists');
       }
     });
-
-
-// models.users.findOrCreate({ Email: req.body.Email }).then(user => {
-//   if (user) {
-//     return res.status(400).json({ email: "Email already exists" });
-//   } else {
-//     const newUser = {
-//       FirstName: req.body.FirstName,
-//       LastName: req.body.LastName,
-//       Email: req.body.Email,
-//       Password: req.body.Password
-//     };
-// // Hash password before saving in database
-//     bcrypt.genSalt(10, (err, salt) => {
-//       bcrypt.hash(newUser.Password, salt, (err, hash) => {
-//         if (err) throw err;
-//         newUser.Password = hash;
-//         newUser
-//           .save()
-//           .then(user => res.json(user))
-//           .catch(err => console.log(err));
-//       });
-//     });
-//   }
-// });
 });
 
 /*OPTION 1 of LOGIN */
