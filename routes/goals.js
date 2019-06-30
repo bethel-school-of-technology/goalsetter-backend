@@ -1,8 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var authService = require('../services/auth');
-
 
 // router.get('/', function(req, res, next) {
 //   models.goals
@@ -28,18 +26,18 @@ router.get('/:userId', (req, res, next) => {
     console.log("ERROR: ", error),
     res.status(400).send("Could not find goals for userId");
   })
-
 })
 
 /* CREATE A GOAL IN THE DATABASE - WORKING*/ 
 router.post('/', function(req, res, next) {
+  console.log("REQUEST BODY", req.body);
   models.goals
     .findOrCreate({
       where: {
         Goal: req.body.Goal,
-        UserId: req.body.userId
       },
       defaults: {
+        userId: req.body.userId,
         DateFinished: req.body.DateFinished,
         Reminder: req.body.Reminder,
         Notes: req.body.Notes,
@@ -53,27 +51,5 @@ router.post('/', function(req, res, next) {
       }
     });
 });
-  
-/* CREATE A GOAL IN THE DATABASE - WORKING BUT NOT ASSOCIATING*/ 
-// router.post('/', function(req, res, next) {
-  // models.goals
-  //   .findOrCreate({
-//       where: {
-//         Goal: req.body.Goal
-//       },
-//       defaults: {
-//         DateFinished: req.body.DateFinished,
-//         Reminder: req.body.Reminder,
-//         Notes: req.body.Notes
-//       }
-//     })
-//     .spread(function(result, created) {
-//       if (created) {
-//         res.send('Goal successfully created');
-//       } else {
-//         res.send('This Goal already exists');
-//       }
-//     });
-// });
-
+ 
 module.exports = router;
