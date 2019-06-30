@@ -36,7 +36,8 @@ router.post('/', function(req, res, next) {
   models.goals
     .findOrCreate({
       where: {
-        Goal: req.body.Goal
+        Goal: req.body.Goal,
+        UserId: req.body.userId
       },
       defaults: {
         DateFinished: req.body.DateFinished,
@@ -46,7 +47,7 @@ router.post('/', function(req, res, next) {
     })
     .spread(function(result, created) {
       if (created) {
-        res.redirect('profile');
+        res.send('Goal Created');
       } else {
         res.send('This Goal already exists');
       }
