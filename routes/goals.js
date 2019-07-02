@@ -19,9 +19,10 @@ router.get('/:userId', (req, res, next) => {
       userId: req.params['userId']
     }
   })
-  .then(userGoals => {
+  
+  .then(payload => {
     res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(userGoals));
+    res.send(JSON.stringify(payload));
   }, error => {
     console.log("ERROR: ", error),
     res.status(400).send("Could not find goals for userId");
@@ -68,5 +69,44 @@ router.post('/', function(req, res, next) {
       }
     });
 });
+
+/* CREATE A GOAL IN THE DATABASE - WORKING*/ 
+router.put('/', function(req, res, next) {
+  console.log("REQUEST BODY", req.body);
+  models.goals.update(req.body, {
+      where: {
+        GoalId: req.body.GoalId
+      },
+    })
+  //   .spread(function (rowsUpdated) {
+  //     res.json(rowsUpdated)
+  //   })
+  //   .catch(next)
+  //  });
+  .then(updatedGoal => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(updatedGoal));
+    console.log("THIS IS:", this.updatedGoal)
+  }, error => {
+    console.log("ERROR: ", error),
+    res.status(400).send("Could not find goals for userId");
+  })
+})
+    
+router.delete("/:id", function (req, res, next) {
+  let Id = parseInt(req.params.id);
+  models.goals
+    .destroy({
+      where: { GoalId: Id }
+    })
+    .then(result => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(result));
+      console.log("THIS IS:", this.result)
+    }, error => {
+      console.log("ERROR: ", error),
+      res.status(400).send("Could not find goals for userId");
+    })
+  })
  
 module.exports = router;

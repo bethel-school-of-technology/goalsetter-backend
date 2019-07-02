@@ -115,7 +115,7 @@ router.delete("/:id", function (req, res, next) {
     .then(result => res.send('UserDeleted'))
     // res.status(201)
     // .catch.status(400)
-    res.send("There was a problem deleting the actor.  Please make sure you are specifying the correct id.");
+    res.send("There was a problem deleting the user.  Please make sure you are specifying the correct id.");
 });
 
 // router.delete("/deleteuser", function (req, res, next) {
