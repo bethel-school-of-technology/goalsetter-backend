@@ -2,14 +2,14 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 
-// router.get('/', function(req, res, next) {
-//   models.goals
-//     .findAll()
-//     .then(goalsFound => {
-//       res.setHeader('Content-Type', 'application/json');
-//       res.send(JSON.stringify(goalsFound));
-//     });
-// });
+router.get('/', (req, res, next) => {
+  models.goals
+    .findAll()
+    .then(goalsFound => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(JSON.stringify(goalsFound));
+    });
+});
 
 /* GET GOALS FOR SPECIFIC USER IN DATABASE */
 router.get('/:userId', (req, res, next) => {
@@ -22,6 +22,23 @@ router.get('/:userId', (req, res, next) => {
   .then(userGoals => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(userGoals));
+  }, error => {
+    console.log("ERROR: ", error),
+    res.status(400).send("Could not find goals for userId");
+  })
+})
+
+/* GET GOALS FOR SPECIFIC USER IN DATABASE */
+router.get('/specificgoals/:GoalId', (req, res, next) => {
+  models.goals
+  .findAll({
+    where: {
+      GoalId: req.params['GoalId']
+    }
+  })
+  .then(specificGoals => {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(specificGoals));
   }, error => {
     console.log("ERROR: ", error),
     res.status(400).send("Could not find goals for userId");

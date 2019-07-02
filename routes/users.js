@@ -60,6 +60,7 @@ const { errors, isValid } = validateLoginInput(req.body);
   }
 // Find user by email
   models.users.findOne({ 
+    
     where: {
     Email: req.body.Email
   }, })
@@ -71,6 +72,7 @@ const { errors, isValid } = validateLoginInput(req.body);
 // Check password
     bcrypt.compare(req.body.Password, user.Password).then(isMatch => {
       if (isMatch) {
+        
         // User matched
         // Create JWT Payload
         const payload = {
@@ -78,7 +80,7 @@ const { errors, isValid } = validateLoginInput(req.body);
           firstName: user.FirstName,
           lastName: user.LastName,
           email: user.Email,
-          goal: user.Goal
+          goal: user.userId,
 
         };
 // Sign token
@@ -104,18 +106,29 @@ const { errors, isValid } = validateLoginInput(req.body);
   });
 });
 
-
-router.delete("/deleteuser", function (req, res, next) {
+router.delete("/:id", function (req, res, next) {
+  let Id = parseInt(req.params.id);
   models.users
-  .findOne({
-    where: {
-        Id: req.body.userId
-    }
-  })
-    .then(result => res.send('user deleted'))
-    .catch.status(400)
-    res.send("There was a problem deleting the user.  Please make sure you are specifying the correct id.");
+    .destroy({
+      where: { Id: Id }
+    })
+    .then(result => res.send('UserDeleted'))
+    // res.status(201)
+    // .catch.status(400)
+    res.send("There was a problem deleting the actor.  Please make sure you are specifying the correct id.");
 });
+
+// router.delete("/deleteuser", function (req, res, next) {
+//   models.users
+//   .findOne({
+//     where: {
+//         Id: req.body.userId
+//     }
+//   })
+//     .then(result => res.send('user deleted'))
+//     .catch.status(400)
+//     res.send("There was a problem deleting the user.  Please make sure you are specifying the correct id.");
+// });
 
 module.exports = router;
 
