@@ -3,12 +3,21 @@ var router = express.Router();
 var models = require('../models');
 
 router.get('/', (req, res, next) => {
+  // middleware to check who's making the request. using the jwt token. 
+  // user id = 1 
   models.goals
     .findAll()
     .then(goalsFound => {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(goalsFound));
     });
+});
+
+// GET /goals/{id}
+router.get('/:goalId', (request, response, next) => {
+  // goalid 
+  // find a goal with an id = goalID
+  // reutrn the json response. 
 });
 
 /* GET GOALS FOR SPECIFIC USER IN DATABASE */
