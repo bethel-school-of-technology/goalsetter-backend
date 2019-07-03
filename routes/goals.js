@@ -1,12 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var cookieParser = require('cookie-parser')
+var cors = require('cors');
+var app = express();
+
+app.use(cors())
 
 router.get('/', (req, res, next) => {
   // middleware to check who's making the request. using the jwt token. 
   // user id = 1 
+  console.log(this.cors);
   models.goals
-    .findAll()
+    .findAll({
+      
+    })
     .then(goalsFound => {
       res.setHeader('Content-Type', 'application/json');
       res.send(JSON.stringify(goalsFound));
@@ -21,25 +29,25 @@ router.get('/:goalId', (request, response, next) => {
 });
 
 /* GET GOALS FOR SPECIFIC USER IN DATABASE */
-router.get('/:userId', (req, res, next) => {
-  models.goals
-  .findAll({
-    where: {
-      userId: req.params['userId']
-    }
-  })
+// router.get('/:userId', (req, res, next) => {
+//   models.goals
+//   .findAll({
+//     where: {
+//       userId: req.params['userId']
+//     }
+//   })
   
-  .then(payload => {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify(payload));
-  }, error => {
-    console.log("ERROR: ", error),
-    res.status(400).send("Could not find goals for userId");
-  })
-})
+//   .then(payload => {
+//     res.setHeader('Content-Type', 'application/json');
+//     res.send(JSON.stringify(payload));
+//   }, error => {
+//     console.log("ERROR: ", error),
+//     res.status(400).send("Could not find goals for userId");
+//   })
+// })
 
 /* GET GOALS FOR SPECIFIC USER IN DATABASE */
-router.get('/specificgoals/:GoalId', (req, res, next) => {
+router.get('/:GoalId', (req, res, next) => {
   models.goals
   .findAll({
     where: {

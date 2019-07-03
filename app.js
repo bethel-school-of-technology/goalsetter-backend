@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require('path');
+var logger = require('morgan');
 var cookieParser = require('cookie-parser');
-// var logger = require('morgan');
 var cors = require("cors");
 var models = require('./models');
 var passport = require('passport');  // <--- Add this code to your declarations
@@ -17,7 +17,7 @@ var app = express();
 
 var users = require('./routes/users')
 
-// app.use(logger('dev'));
+app.use(logger('dev'));
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
