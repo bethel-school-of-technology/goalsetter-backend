@@ -11,15 +11,17 @@ var authService = {
       },
       'secretkey',
       {
-        expiresIn: '1h'
+        expiresIn: '1h',
+        algorithms: 'RS256'
       }
     );
     return token;
   },
-  verifyUser: function (token) {  
+  verifyUser: function(token) { 
+    var secret = new Buffer.from('secretkey', 'base64');
     try {
-      let decoded = jwt.verify(token, 'secretkey'); 
-      return models.users.findByPk(decoded.UserId); 
+      let decoded = jwt.verify(token, 'secretkey', { algorithms:  ["RS256"] }); 
+      return decoded.UserId; 
     } catch (err) {
       console.log(err);
       return null;

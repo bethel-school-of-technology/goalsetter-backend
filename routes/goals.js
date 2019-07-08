@@ -1,19 +1,34 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var cookieParser = require('cookie-parser')
-var cors = require('cors');
-var app = express();
+const jwt = require("jsonwebtoken");
+var authService = require('../services/auth');
 
-app.use(cors())
+// router.get('/test', passport.authenticate('jwt', { session: false }), (req, res) =>{
+// 	const response = {
+// 		success: true,
+// 	};
+
+// 	return res.status(200).json(response);
+// });
+
+// passport.authenticate('jwt', { session: false }),
 
 router.get('/', (req, res, next) => {
   // middleware to check who's making the request. using the jwt token. 
   // user id = 1 
-  console.log(this.cors);
+
+  let jwtAuthToken = req.header('Authorization');
+  jwtAuthToken = jwtAuthToken.slice(7, jwtAuthToken.length);
+  const authUserId = authService.verifyUser(jwtAuthToken);
+
+  console.log("======== JWT AUTH TOKEN ==========", jwtAuthToken);
+  console.log("======== authUserId ==========", authUserId);
   models.goals
     .findAll({
-      
+      where: {
+              userId: authUserId
+            }
     })
     .then(goalsFound => {
       res.setHeader('Content-Type', 'application/json');
@@ -47,6 +62,8 @@ router.get('/:goalId', (request, response, next) => {
 // })
 
 /* GET GOALS FOR SPECIFIC USER IN DATABASE */
+
+
 router.get('/:GoalId', (req, res, next) => {
   models.goals
   .findAll({
