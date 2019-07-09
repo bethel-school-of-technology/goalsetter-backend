@@ -3,16 +3,8 @@ var router = express.Router();
 var models = require('../models');
 const jwt = require("jsonwebtoken");
 var authService = require('../services/auth');
+const keys = require('../config/keys');
 
-// router.get('/test', passport.authenticate('jwt', { session: false }), (req, res) =>{
-// 	const response = {
-// 		success: true,
-// 	};
-
-// 	return res.status(200).json(response);
-// });
-
-// passport.authenticate('jwt', { session: false }),
 
 router.get('/', (req, res, next) => {
   // middleware to check who's making the request. using the jwt token. 
@@ -35,33 +27,6 @@ router.get('/', (req, res, next) => {
       res.send(JSON.stringify(goalsFound));
     });
 });
-
-// GET /goals/{id}
-router.get('/:goalId', (request, response, next) => {
-  // goalid 
-  // find a goal with an id = goalID
-  // reutrn the json response. 
-});
-
-/* GET GOALS FOR SPECIFIC USER IN DATABASE */
-// router.get('/:userId', (req, res, next) => {
-//   models.goals
-//   .findAll({
-//     where: {
-//       userId: req.params['userId']
-//     }
-//   })
-  
-//   .then(payload => {
-//     res.setHeader('Content-Type', 'application/json');
-//     res.send(JSON.stringify(payload));
-//   }, error => {
-//     console.log("ERROR: ", error),
-//     res.status(400).send("Could not find goals for userId");
-//   })
-// })
-
-/* GET GOALS FOR SPECIFIC USER IN DATABASE */
 
 
 router.get('/:GoalId', (req, res, next) => {
@@ -127,7 +92,8 @@ router.put('/', function(req, res, next) {
   })
 })
     
-router.delete("/:id", function (req, res, next) {
+/*DELETE A GOAL*/
+router.delete("/:GoalId", function (req, res, next) {
   let Id = parseInt(req.params.id);
   models.goals
     .destroy({

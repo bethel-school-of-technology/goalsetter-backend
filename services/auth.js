@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const models = require('../models/index');
 const bcrypt = require("bcryptjs");
+const keys = require('../config/keys');
 
 var authService = {
   signUser: function(user) {
@@ -18,10 +19,11 @@ var authService = {
     return token;
   },
   verifyUser: function(token) { 
-    var secret = new Buffer.from('secretkey', 'base64');
+    // var secret = new Buffer.from('secretkey', 'base64');
     try {
-      let decoded = jwt.verify(token, 'secretkey', { algorithms:  ["RS256"] }); 
-      return decoded.UserId; 
+      let decoded = jwt.verify(token, keys.secretOrKey); 
+      console.log("======== DECODED TOKEN ===========", decoded);
+      return decoded.id; 
     } catch (err) {
       console.log(err);
       return null;
