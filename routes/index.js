@@ -4,12 +4,12 @@ var models = require('../models');
 var authService = require('../services/auth');
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });
- });
+});
 
-/* CREATE A USER IN THE DATABASE - WORKING */ 
-router.post('/', function(req, res, next) {
+/* CREATE A USER IN THE DATABASE - WORKING */
+router.post('/', function (req, res, next) {
   models.users
     .findOrCreate({
       where: {
@@ -21,7 +21,7 @@ router.post('/', function(req, res, next) {
         Password: req.body.Password
       }
     })
-    .spread(function(result, created) {
+    .spread(function (result, created) {
       if (created) {
         res.send('signup');
       } else {
@@ -31,7 +31,7 @@ router.post('/', function(req, res, next) {
 });
 
 /* LOGIN PAGE */
-router.post('/login', function(req, res, next) {
+router.post('/login', function (req, res, next) {
   models.users
     .findOne({
       where: {
@@ -56,7 +56,7 @@ router.get('logout', function (req, res) {
 
 
 /* DISPLAY ALL USERS TO HOMEPAGE - WORKING */
-router.get('/allusers', function(req, res, next) {
+router.get('/allusers', function (req, res, next) {
   models.users
     .findAll()
     .then(usersFound => {
@@ -79,13 +79,5 @@ router.get('/account', function (req, res, next) {
 });
 
 
-// router.get('/logout', function (req, res, next) {
-//   (req.session.destroy)(function(err) {
-//     if (err) {
-//       return next(err)
-//     } else {
-//       return res.redirect('/home');
-//     }
-//   });
-// });
+
 module.exports = router;

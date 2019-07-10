@@ -9,7 +9,6 @@ const keys = require('../config/keys');
 router.get('/', (req, res, next) => {
   // middleware to check who's making the request. using the jwt token. 
   // user id = 1 
-
   let jwtAuthToken = req.header('Authorization');
   jwtAuthToken = jwtAuthToken.slice(7, jwtAuthToken.length);
   const authUserId = authService.verifyUser(jwtAuthToken);
@@ -31,7 +30,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:GoalId', (req, res, next) => {
   models.goals
-  .findAll({
+  .findOne({
     where: {
       GoalId: req.params['GoalId']
     }
@@ -69,19 +68,14 @@ router.post('/', function(req, res, next) {
     });
 });
 
-/* CREATE A GOAL IN THE DATABASE - WORKING*/ 
-router.put('/', function(req, res, next) {
+/* UPDATE A GOAL IN THE DATABASE - WORKING*/ 
+router.put('/:GoalId', function(req, res, next) {
   console.log("REQUEST BODY", req.body);
   models.goals.update(req.body, {
       where: {
-        GoalId: req.body.GoalId
-      },
+        GoalId: req.params.GoalId
+      }
     })
-  //   .spread(function (rowsUpdated) {
-  //     res.json(rowsUpdated)
-  //   })
-  //   .catch(next)
-  //  });
   .then(updatedGoal => {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(updatedGoal));
@@ -94,10 +88,11 @@ router.put('/', function(req, res, next) {
     
 /*DELETE A GOAL*/
 router.delete("/:GoalId", function (req, res, next) {
-  let Id = parseInt(req.params.id);
+  // console.log("+++REQUEST BODY++++", req.body);
+  // let Id = parseInt(req.params.GoalId);
   models.goals
     .destroy({
-      where: { GoalId: Id }
+      where:  {GoalId: req.params.GoalId} 
     })
     .then(result => {
       res.setHeader('Content-Type', 'application/json');

@@ -11,8 +11,6 @@ var bodyParser = require ('body-parser');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var goalsRouter = require('./routes/goals');
-var profilegoalsRouter = require('./routes/profilegoals');
-var specificgoalRouter = require('./routes/specificgoal');
 var app = express();
 
 var users = require('./routes/users')
@@ -30,8 +28,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goals', goalsRouter);
-app.use('/profilegoals', profilegoalsRouter);
-app.use('/specificgoals', profilegoalsRouter);
+
 
 // Bodyparser middleware
 app.use(

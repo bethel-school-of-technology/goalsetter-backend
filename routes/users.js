@@ -118,17 +118,6 @@ router.delete("/:id", function (req, res, next) {
     res.send("There was a problem deleting the user.  Please make sure you are specifying the correct id.");
 });
 
-// router.delete("/deleteuser", function (req, res, next) {
-//   models.users
-//   .findOne({
-//     where: {
-//         Id: req.body.userId
-//     }
-//   })
-//     .then(result => res.send('user deleted'))
-//     .catch.status(400)
-//     res.send("There was a problem deleting the user.  Please make sure you are specifying the correct id.");
-// });
 
 module.exports = router;
 
