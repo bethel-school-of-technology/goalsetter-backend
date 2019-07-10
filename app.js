@@ -6,7 +6,7 @@ var cors = require("cors");
 var models = require('./models');
 var passport = require('passport');  // <--- Add this code to your declarations
 var session = require('express-session');
-var bodyParser = require ('body-parser');
+var bodyParser = require('body-parser');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'perilous journey' }));
-app.use(passport.initialize());  
+app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/', indexRouter);
@@ -47,13 +47,13 @@ app.use('/routes/users', users);
 
 
 /* CORS CODE */
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-  
+
 models.sequelize.sync({ logging: (msg) => console.log(msg) }).then(function () {
   console.log("DB Sync'd up")
 });

@@ -1,4 +1,6 @@
 'use strict';
+
+
 module.exports = (sequelize, DataTypes) => {
   const goals = sequelize.define('goals', {
     GoalId: {
@@ -8,11 +10,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true,
       type: DataTypes.INTEGER(5)
     },
-    // UserId: {
-    //   allowNull: false,
-    //   required: true,
-    //   type: DataTypes.INTEGER(5)
-    // },
+    
     Goal: DataTypes.STRING,
     DateFinished: DataTypes.DATE,
     Reminder: DataTypes.STRING,
