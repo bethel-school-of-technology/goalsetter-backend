@@ -5,7 +5,7 @@ var authService = require('../services/auth');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.send('it works');
 });
 
 /* CREATE A USER IN THE DATABASE - WORKING */
