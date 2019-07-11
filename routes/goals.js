@@ -88,10 +88,10 @@ router.put('/:GoalId', function (req, res, next) {
 /*DELETE A GOAL*/
 router.delete("/:GoalId", function (req, res, next) {
     // console.log("+++REQUEST BODY++++", req.body);
-    // let Id = parseInt(req.params.GoalId);
+    let Id = parseInt(req.params.GoalId);
     models.goals
         .destroy({
-            where: { GoalId: req.params.GoalId }
+            where: { GoalId: Id }
         })
         .then(result => {
             res.setHeader('Content-Type', 'application/json');
