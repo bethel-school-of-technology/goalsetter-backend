@@ -70,9 +70,10 @@ router.post('/', function (req, res, next) {
 /* UPDATE A GOAL IN THE DATABASE - WORKING*/
 router.put('/:GoalId', function (req, res, next) {
     console.log("REQUEST BODY", req.body);
+    let Id = parseInt(req.params.GoalId);
     models.goals.update(req.body, {
         where: {
-            GoalId: req.params.GoalId
+            GoalId: Id
         }
     })
         .then(updatedGoal => {
@@ -87,11 +88,10 @@ router.put('/:GoalId', function (req, res, next) {
 
 /*DELETE A GOAL*/
 router.delete("/:GoalId", function (req, res, next) {
-    // console.log("+++REQUEST BODY++++", req.body);
-    let Id = parseInt(req.params.GoalId);
+    // let Id = parseInt(req.params.GoalId);
     models.goals
         .destroy({
-            where: { GoalId: Id }
+            where: { GoalId: req.params.GoalId }
         })
         .then(result => {
             res.setHeader('Content-Type', 'application/json');
